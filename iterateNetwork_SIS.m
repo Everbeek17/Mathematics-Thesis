@@ -1,18 +1,23 @@
-function [numInfected, numSusceptible] = iterateNetwork_SIS(startingNodes, adjMatrix, ...
-    numTimeSteps, infectionRate, recoveryRate)
+function [numInfected, numSusceptible] = iterateNetwork_SIS(initialNodes, ...
+    adjMatrix, infectionRate, recoveryRate, simulationLength, deltaT)
 %ITERATENETWORK_SIS Summary of this function goes here
 %   Detailed explanation goes here
 
-    N = length(startingNodes);
-    currentNodes = startingNodes;
+
+    numTimeSteps = simulationLength/deltaT; % (not counting t = 0)
+    N = length(initialNodes);
+    
+    % initialize arrays that record sums as network progresses through time
     numInfected = zeros(numTimeSteps + 1, 1);
     numSusceptible = zeros(numTimeSteps + 1, 1);
+    
+    currentNodes = initialNodes;
     
     % calulate this once at the beginning, and then again after each loop
     numInfected(1) = sum(currentNodes(:) == Node.Infected);
     numSusceptible(1) = sum(currentNodes(:) == Node.Susceptible);
     
-    for timestep = 1:numTimeSteps
+    for timestep = 0:1:numTimeSteps
         
         % initialize next iteration's array
         nextNodes = Node.empty(N, 0);
@@ -27,36 +32,30 @@ function [numInfected, numSusceptible] = iterateNetwork_SIS(startingNodes, adjMa
                 % count how many of the neighbors are infected
                 numInfectedNeighbors = 0;
                 for j = 1:N
-                    % if this node is connected to an infected node
+                    % if another infected node is connected to this node
                     if (adjMatrix(j,i) == 1 && (currentNodes(j) == Node.Infected))
                         numInfectedNeighbors = numInfectedNeighbors + 1;
                     end
                 end
                 
-                if (numInfectedNeighbors > 0)
-                    % try once, for each infected neighbor, to infect this node
-                    for j = 1:numInfectedNeighbors
-                        if (rand() <= infectionRate)
-                            nextNodes(i) = Node.Infected;
-                            break;
-                        % if on last loop, then no more attempts to infect
-                        elseif (j == numInfectedNeighbors)
-                            nextNodes(i) = Node.Susceptible;
-                        end
+                % default node to susceptible, then see if it gets infected
+                nextNodes(i) = Node.Susceptible;
+                % try once, for each infected neighbor, to infect this node
+                for j = 1:numInfectedNeighbors
+                    if (rand() <= (infectionRate * deltaT))
+                        nextNodes(i) = Node.Infected;
+                        break;
                     end
-                else
-                    % if no infected neighbors, stay susceptible
-                    nextNodes(i) = Node.Susceptible;
                 end
-                
+  
             % if the node is infected, will they become susceptible?    
             elseif (currentNodes(i) == Node.Infected)
                 
                 % if the given infected node recovers
-                if (rand() <= recoveryRate)
+                if (rand() <= (recoveryRate * deltaT))
                     nextNodes(i) = Node.Susceptible;
+                % if failed recovery, stay infected
                 else
-                    % if failed recovery, stay infected
                     nextNodes(i) = Node.Infected;
                 end
             end
