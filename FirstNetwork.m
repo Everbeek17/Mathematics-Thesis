@@ -23,7 +23,7 @@ initialNodes = CreateInitialNodes(chanceOfInitialInfection, N);
 
 %% Iterate
 
-[numInfected, numSusceptible] = iterateNetwork_SIS(initialNodes, ...
+[numInfected, numSusceptible] = SimulateNetwork_SIS(initialNodes, ...
     adjacencyMatrix, beta, gamma, simulationLength, deltaT);
 
 %% Plots
