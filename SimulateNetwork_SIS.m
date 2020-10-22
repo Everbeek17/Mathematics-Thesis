@@ -4,12 +4,13 @@ function [numInfected, numSusceptible] = SimulateNetwork_SIS(initialNodes, ...
 %   Detailed explanation goes here
 
 
-    numTimeSteps = simulationLength/deltaT; % (not counting t = 0)
+    timeValues = 0:deltaT:simulationLength;
+    numTimeSteps = length(timeValues);
     N = length(initialNodes);
     
     % initialize arrays that record sums as network progresses through time
-    numInfected = zeros(numTimeSteps + 1, 1);
-    numSusceptible = zeros(numTimeSteps + 1, 1);
+    numInfected = zeros(numTimeSteps, 1);
+    numSusceptible = zeros(numTimeSteps, 1);
     
     currentNodes = initialNodes;
     
@@ -17,7 +18,7 @@ function [numInfected, numSusceptible] = SimulateNetwork_SIS(initialNodes, ...
     numInfected(1) = sum(currentNodes(:) == Node.Infected);
     numSusceptible(1) = sum(currentNodes(:) == Node.Susceptible);
     
-    for timestep = 0:1:numTimeSteps
+    for timestep = 1:numTimeSteps
         
         % initialize next iteration's array
         nextNodes = Node.empty(N, 0);
@@ -62,11 +63,10 @@ function [numInfected, numSusceptible] = SimulateNetwork_SIS(initialNodes, ...
         end
         
         % count and save number of infected and susceptible
-        numInfected(timestep + 1) = sum(currentNodes(:) == Node.Infected);
-        numSusceptible(timestep + 1) = sum(currentNodes(:) == Node.Susceptible);
+        numInfected(timestep) = sum(currentNodes(:) == Node.Infected);
+        numSusceptible(timestep) = sum(currentNodes(:) == Node.Susceptible);
         
         % update node array for next loop
         currentNodes = nextNodes;
     end
 end
-
