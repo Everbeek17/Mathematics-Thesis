@@ -16,7 +16,7 @@ tic
 
 N = 2000;       % number of nodes
 k = 5;          % mean degree (average nodal degree)
-gamma = 0.20;   % chance infected becomes susceptible
+gamma = 0.40;   % chance infected becomes susceptible
 
 chanceOfInitialInfection = 0.03;    % chance a random node starts infected
 
