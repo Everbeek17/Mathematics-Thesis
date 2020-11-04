@@ -1,0 +1,69 @@
+function [] = SimAndPlot_SIS_BinaryVsODE(Parameters)
+%SIMANDCOMPAREBINARYVSODE Perform Binary vs ODE comparisons.
+%   Simulate both the Binary model and the ODE model then plot them
+%   together on the same graph to allow for comparison.
+
+
+    %% Setup
+
+    adjacencyMatrix = CreateAdjacencyMatrix(Parameters.N, Parameters.k);
+
+    initialNodes = CreateInitialNodes(...
+        Parameters.initialInfectionChance, Parameters.N);
+
+    %% Simulate
+
+    % Simulate Binary model
+    [numInfected, numSusceptible] = SimulateNetwork_SIS_Binary(...
+        initialNodes, adjacencyMatrix, Parameters.beta, ...
+        Parameters.gamma, Parameters.length, Parameters.deltaT);
+    
+    % convert Binary model results into ratio
+    ratioInfected_Binary = numInfected/Parameters.N;
+    
+    
+    % Simulate ODE Model
+    avgProbabilities_ODE = SimulateNetwork_SIS_ODE(initialNodes, ...
+        adjacencyMatrix, Parameters.beta, ...
+        Parameters.gamma, Parameters.length, Parameters.deltaT);
+    
+    
+    %% Plot
+
+    tiledlayout(2,2);
+    
+    % plot ODE figure
+    ax1 = nexttile;
+    plot(ax1, 0:Parameters.deltaT:Parameters.length, avgProbabilities_ODE, 'b');
+    ylim([0,1]);
+    title(ax1, "ODE Model");
+    ylabel(ax1, "Probability a Node is Infected");
+    xlabel(ax1, "Time");
+
+    % plot Binary figure
+    ax2 = nexttile;
+    plot(ax2, 0:Parameters.deltaT:Parameters.length, ratioInfected_Binary, 'r');
+    ylim([0,1]);
+    title(ax2, "Binary Model");
+    xlabel(ax2, "Time");
+    ylabel(ax2, "Fraction of Nodes Infected");
+
+    % plot ODE and Binary overlapping
+    ax3 = nexttile([1 2]);
+    plot(ax3, 0:Parameters.deltaT:Parameters.length, avgProbabilities_ODE, 'b');
+    hold on
+    plot(ax3, 0:Parameters.deltaT:Parameters.length, ratioInfected_Binary, 'r');
+    ylim([0,1]);
+    title(ax3, "Binary vs ODE Model");
+    xlabel(ax3, "Time");
+    ylabel(ax3, "Probability/Fraction of Nodes Infected");
+    legend(ax3, "ODE", "Binary", "Location", "northwest");
+    hold off
+
+    % change fontsizes
+    ax1.FontSize = 16;
+    ax2.FontSize = 16;
+    ax3.FontSize = 16;
+    
+end
+
