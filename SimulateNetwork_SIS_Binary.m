@@ -1,6 +1,7 @@
-function [numInfected, numSusceptible] = SimulateNetwork_SIS(initialNodes, ...
-    adjacencyMatrix, infectionRate, recoveryRate, simulationLength, deltaT)
-%ITERATENETWORK_SIS Summary of this function goes here
+function [numInfected, numSusceptible] = SimulateNetwork_SIS_Binary(...
+    initialNodes, adjacencyMatrix, infectionRate, recoveryRate, ...
+    simulationLength, deltaT)
+% Simulates network using SIS model and Binary states.
 %   Detailed explanation goes here
 
     timeValues = 0:deltaT:simulationLength;
@@ -21,8 +22,8 @@ function [numInfected, numSusceptible] = SimulateNetwork_SIS(initialNodes, ...
     for timestep = 2:numTimeSteps
         
         % increment nodes
-        currentNodes = SIS_IncrementNodes(currentNodes, adjacencyMatrix, ...
-            infectionRate, recoveryRate, deltaT);
+        currentNodes = SIS_IncrementNodes_Binary(currentNodes, ...
+            adjacencyMatrix, infectionRate, recoveryRate, deltaT);
         
         % count and save number of infected and susceptible
         numInfected(timestep) = sum(currentNodes(:) == Node.Infected);
