@@ -1,4 +1,4 @@
-function [nextNodes] = SIS_IncrementNodes(currentNodes, ...
+function [nextNodes] = SIS_IncrementNodes_Binary(currentNodes, ...
     adjacencyMatrix, infectionRate, recoveryRate, deltaT)
 %SIS_INCREMENT Summary of this function goes here
 %   Detailed explanation goes here
@@ -7,7 +7,7 @@ function [nextNodes] = SIS_IncrementNodes(currentNodes, ...
     N = length(currentNodes);
     
     % create next iteration, defaulting all nodes to susceptible
-    nextNodes = Node.empty(N, 0);
+    nextNodes = Node.empty(0, N);
     nextNodes(1:N) = Node.Susceptible;  % could this be sped up?
 
     % iterate along each node

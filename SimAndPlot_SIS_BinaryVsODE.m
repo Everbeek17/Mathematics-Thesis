@@ -14,18 +14,29 @@ function [] = SimAndPlot_SIS_BinaryVsODE(Parameters)
     %% Simulate
 
     % Simulate Binary model
-    [numInfected, numSusceptible] = SimulateNetwork_SIS_Binary(...
+    nodes = SimulateNetwork_SIS_Binary(...
         initialNodes, adjacencyMatrix, Parameters.beta, ...
         Parameters.gamma, Parameters.length, Parameters.deltaT);
     
-    % convert Binary model results into ratio
-    ratioInfected_Binary = numInfected/Parameters.N;
+    % calculate ratios for each timestep
+    ratioInfected_Binary = zeros(1, length(nodes));
+    for i = 1:length(nodes)
+        ratioInfected_Binary(i) = sum(nodes{i}(:) == Node.Infected)/...
+            Parameters.N;
+    end
+    
     
     
     % Simulate ODE Model
-    avgProbabilities_ODE = SimulateNetwork_SIS_ODE(initialNodes, ...
+    probabilities_ODE = SimulateNetwork_SIS_ODE(initialNodes, ...
         adjacencyMatrix, Parameters.beta, ...
         Parameters.gamma, Parameters.length, Parameters.deltaT);
+    
+    % get the averages of all the ODE probabilites
+    avgProbabilities_ODE = zeros(1, length(probabilities_ODE(:,1)));
+    for i = 1:length(probabilities_ODE(:,1))
+        avgProbabilities_ODE(i) = sum(probabilities_ODE(i,:))/Parameters.N;
+    end
     
     
     %% Plot
@@ -64,6 +75,11 @@ function [] = SimAndPlot_SIS_BinaryVsODE(Parameters)
     ax1.FontSize = 16;
     ax2.FontSize = 16;
     ax3.FontSize = 16;
+    
+    % save figure
+    dateTimeFormat = 'mm-dd-yy_HH:MM';
+    figFileName = ['Figures/ODE_vs_Binary_', datestr(now,dateTimeFormat), '.fig'];
+    savefig(figFileName);
     
 end
 
