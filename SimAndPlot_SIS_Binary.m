@@ -4,7 +4,7 @@ function [] = SimAndPlot_SIS_Binary(Parameters)
 %   infected or not) and then plots results over time.
 
     %% Setup
-
+    
     adjacencyMatrix = CreateAdjacencyMatrix(Parameters.N, Parameters.k);
 
     initialNodes = CreateInitialNodes(...
@@ -12,10 +12,19 @@ function [] = SimAndPlot_SIS_Binary(Parameters)
 
     %% Simulate
 
-    [numInfected, numSusceptible] = SimulateNetwork_SIS_Binary(...
+    nodes = SimulateNetwork_SIS_Binary(...
         initialNodes, adjacencyMatrix, Parameters.beta, ...
         Parameters.gamma, Parameters.length, Parameters.deltaT);
 
+    % calculate totals for each timestep
+    numTimeSteps = length(0:Parameters.deltaT:Parameters.length);
+    numInfected = zeros(1, numTimeSteps);
+    numSusceptible = zeros(1, numTimeSteps);
+    for i = 1:numTimeSteps
+        numInfected(i) = sum(nodes{i}(:) == Node.Infected);
+        numSusceptible(i) = sum(nodes{i}(:) == Node.Susceptible);
+    end
+    
     %% Plot
 
     tiledlayout(2,1);

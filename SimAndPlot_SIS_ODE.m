@@ -13,10 +13,16 @@ function [] = SimAndPlot_SIS_ODE(Parameters)
 
     %% Simulate
 
-    avgProbabilities = SimulateNetwork_SIS_ODE(initialNodes, ...
+    probabilities_ODE = SimulateNetwork_SIS_ODE(initialNodes, ...
         adjacencyMatrix, Parameters.beta, ...
         Parameters.gamma, Parameters.length, Parameters.deltaT);
-
+    
+    % get the averages of all the ODE probabilites
+    avgProbabilities = zeros(1, length(probabilities_ODE(:,1)));
+    for i = 1:length(probabilities_ODE(:,1))
+        avgProbabilities(i) = sum(probabilities_ODE(i,:))/Parameters.N;
+    end
+    
     %% Plot
 
     plot(0:Parameters.deltaT:Parameters.length, avgProbabilities);
