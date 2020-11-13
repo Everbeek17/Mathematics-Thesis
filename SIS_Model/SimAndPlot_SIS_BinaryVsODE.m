@@ -1,5 +1,5 @@
 function [] = SimAndPlot_SIS_BinaryVsODE(Parameters)
-%SIMANDCOMPAREBINARYVSODE Perform Binary vs ODE comparisons.
+%SimAndPlot_SIS_BinaryVsODE Perform Binary vs ODE comparisons.
 %   Simulate both the Binary model and the ODE model then plot them
 %   together on the same graph to allow for comparison.
 
@@ -24,7 +24,6 @@ function [] = SimAndPlot_SIS_BinaryVsODE(Parameters)
         ratioInfected_Binary(i) = sum(nodes{i}(:) == Node.Infected)/...
             Parameters.N;
     end
-    
     
     
     % Simulate ODE Model
@@ -71,15 +70,16 @@ function [] = SimAndPlot_SIS_BinaryVsODE(Parameters)
     legend(ax3, "ODE", "Binary", "Location", "northwest");
     hold off
 
-    % change fontsizes
+    % change fontsizes (make them bigger than default)
     ax1.FontSize = 16;
     ax2.FontSize = 16;
     ax3.FontSize = 16;
     
-    % save figure
-    dateTimeFormat = 'mm-dd-yy_HH:MM';
-    figFileName = ['Figures/ODE_vs_Binary_', datestr(now,dateTimeFormat), '.fig'];
-    savefig(figFileName);
-    
+    if Parameters.saveFig
+        % save figure
+        dateTimeFormat = 'mm-dd-yy_HH:MM';
+        figFileName = ['Figures/BinaryVsODE_', datestr(now,dateTimeFormat), '.fig'];
+        savefig(figFileName);
+    end
 end
 

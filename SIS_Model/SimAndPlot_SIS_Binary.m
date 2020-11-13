@@ -44,6 +44,12 @@ function [] = SimAndPlot_SIS_Binary(Parameters)
     ylabel(ax2, 'Fraction of Nodes Infected');
 
     hold off
+    if Parameters.saveFig
+        % save figure
+        dateTimeFormat = 'mm-dd-yy_HH:MM';
+        figFileName = ['Figures/Binary_', datestr(now,dateTimeFormat), '.fig'];
+        savefig(figFileName);
+    end
 
 end
 
