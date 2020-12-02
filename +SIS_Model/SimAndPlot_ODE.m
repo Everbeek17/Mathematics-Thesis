@@ -1,4 +1,4 @@
-function [] = SimAndPlot_SIS_ODE(Parameters)
+function [] = SimAndPlot_ODE(Parameters)
 % Simulates and plots SIS model [ODE Method]
 %   Simulates the SIS model using ODE methods (each node has a probability
 %   of being infected at any given time) and then plots results over time.
@@ -13,7 +13,7 @@ function [] = SimAndPlot_SIS_ODE(Parameters)
 
     %% Simulate
 
-    probabilities_ODE = SimulateNetwork_SIS_ODE(initialNodes, ...
+    probabilities_ODE = SIS_Model.SimulateNetwork_ODE(initialNodes, ...
         adjacencyMatrix, Parameters.beta, ...
         Parameters.gamma, Parameters.length, Parameters.deltaT);
     

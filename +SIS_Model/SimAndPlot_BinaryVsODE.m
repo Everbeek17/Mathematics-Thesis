@@ -1,4 +1,4 @@
-function [] = SimAndPlot_SIS_BinaryVsODE(Parameters)
+function [] = SimAndPlot_BinaryVsODE(Parameters)
 %SimAndPlot_SIS_BinaryVsODE Perform Binary vs ODE comparisons.
 %   Simulate both the Binary model and the ODE model then plot them
 %   together on the same graph to allow for comparison.
@@ -14,7 +14,7 @@ function [] = SimAndPlot_SIS_BinaryVsODE(Parameters)
     %% Simulate
 
     % Simulate Binary model
-    nodes = SimulateNetwork_SIS_Binary(...
+    nodes = SIS_Model.SimulateNetwork_Binary(...
         initialNodes, adjacencyMatrix, Parameters.beta, ...
         Parameters.gamma, Parameters.length, Parameters.deltaT);
     
@@ -27,7 +27,7 @@ function [] = SimAndPlot_SIS_BinaryVsODE(Parameters)
     
     
     % Simulate ODE Model
-    probabilities_ODE = SimulateNetwork_SIS_ODE(initialNodes, ...
+    probabilities_ODE = SIS_Model.SimulateNetwork_ODE(initialNodes, ...
         adjacencyMatrix, Parameters.beta, ...
         Parameters.gamma, Parameters.length, Parameters.deltaT);
     

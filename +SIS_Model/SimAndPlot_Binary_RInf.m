@@ -1,4 +1,4 @@
-function [] = SimAndPlot_SIS_Binary_RInf(Parameters)
+function [] = SimAndPlot_Binary_RInf(Parameters)
 % Simulates and plots SIS model [Binary Method]
 %   Simulates the SIS model using binary methods (each node is either
 %   infected or not) multiple times, and plots a graph of the beta values
@@ -32,7 +32,7 @@ function [] = SimAndPlot_SIS_Binary_RInf(Parameters)
             initialInfectionChance, N);
         
         % simulate
-        nodes = SimulateNetwork_SIS_Binary(initialNodes, ...
+        nodes = SIS_Model.SimulateNetwork_Binary(initialNodes, ...
             adjacencyMatrix, beta, gamma, ...
             simLength, deltaT);
         

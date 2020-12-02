@@ -1,4 +1,4 @@
-function [] = SimAndPlot_SIS_Binary(Parameters)
+function [] = SimAndPlot_Binary(Parameters)
 % Simulates and plots SIS model [Binary Method]
 %   Simulates the SIS model using binary methods (each node is either
 %   infected or not) and then plots results over time.
@@ -12,7 +12,7 @@ function [] = SimAndPlot_SIS_Binary(Parameters)
 
     %% Simulate
 
-    nodes = SimulateNetwork_SIS_Binary(...
+    nodes = SIS_Model.SimulateNetwork_Binary(...
         initialNodes, adjacencyMatrix, Parameters.beta, ...
         Parameters.gamma, Parameters.length, Parameters.deltaT);
 
