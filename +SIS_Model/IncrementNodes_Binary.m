@@ -8,7 +8,7 @@ function [nextNodes] = IncrementNodes_Binary(currentNodes, ...
     
     % create next iteration, defaulting all nodes to susceptible
     nextNodes = Node.empty(0, N);
-    nextNodes(1:N) = Node.Susceptible;  % could this be sped up?
+    nextNodes(:) = Node.Susceptible;
 
     % iterate along each node
     for node_i = 1:N
