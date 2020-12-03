@@ -32,10 +32,7 @@ function [] = SimAndPlot_ODE(Parameters)
     ylabel("Probability a Node is Infected");
 
     if Parameters.saveFig
-        % save figure
-        dateTimeFormat = 'mm-dd-yy_HH:MM';
-        figFileName = ['Figures/ODE_', datestr(now,dateTimeFormat), '.fig'];
-        savefig(figFileName);
+        SaveCurrentFigure(Parameters.modelType, Parameters.simType);
     end
 end
 

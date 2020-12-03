@@ -76,10 +76,7 @@ function [] = SimAndPlot_BinaryVsODE(Parameters)
     ax3.FontSize = 16;
     
     if Parameters.saveFig
-        % save figure
-        dateTimeFormat = 'mm-dd-yy_HH:MM';
-        figFileName = ['Figures/BinaryVsODE_', datestr(now,dateTimeFormat), '.fig'];
-        savefig(figFileName);
+        SaveCurrentFigure(Parameters.modelType, Parameters.simType);
     end
 end
 

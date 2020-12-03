@@ -3,7 +3,7 @@ function [] = SimAndPlot_ODE_RInf(Parameters)
 %   Simulates the SIS model using ODE methods multiple times, and 
 %   plots a graph of the beta values against the r_infinity values.
 
-   %% Setup
+    %% Setup
 
     adjacencyMatrix = CreateAdjacencyMatrix(Parameters.N, Parameters.k);
     
@@ -59,9 +59,6 @@ function [] = SimAndPlot_ODE_RInf(Parameters)
     ax.FontSize = 16;
 
     if Parameters.saveFig
-        % save figure
-        dateTimeFormat = 'mm-dd-yy_HH:MM';
-        figFileName = ['Figures/ODE_RInf_', datestr(now,dateTimeFormat), '.fig'];
-        savefig(figFileName);
+        SaveCurrentFigure(Parameters.modelType, Parameters.simType);
     end
 end

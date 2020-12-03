@@ -18,7 +18,8 @@ function [] = SimAndPlot_BinaryVsODE_PointGraph(Parameters)
         initialNodes, adjacencyMatrix, Parameters.beta, ...
         Parameters.gamma, Parameters.length, Parameters.deltaT);
     
-    % calculate ratios for each node over second half of all timesteps
+    % calculate average time spent infected for each node
+    % over second half of all timesteps
     ratioSpentInfected_Binary = zeros(1, length(nodes{1}));
     for node_i = 1:length(nodes{1})
         total = 0;
@@ -55,10 +56,7 @@ function [] = SimAndPlot_BinaryVsODE_PointGraph(Parameters)
     ax.FontSize = 16;
     
     if Parameters.saveFig
-        % save figure
-        dateTimeFormat = 'mm-dd-yy_HH:MM';
-        figFileName = ['Figures/BinaryVsODE_PointGraph_', datestr(now,dateTimeFormat), '.fig'];
-        savefig(figFileName);
+        SaveCurrentFigure(Parameters.modelType, Parameters.simType);
     end
 end
 

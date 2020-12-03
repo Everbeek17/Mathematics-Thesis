@@ -67,9 +67,6 @@ function [] = SimAndPlot_Binary_RInf(Parameters)
     ax.FontSize = 16;
 
     if Parameters.saveFig
-        % save figure
-        dateTimeFormat = 'mm-dd-yy_HH:MM';
-        figFileName = ['Figures/Binary_RInf_', datestr(now,dateTimeFormat), '.fig'];
-        savefig(figFileName);
+        SaveCurrentFigure(Parameters.modelType, Parameters.simType);
     end
 end
