@@ -7,13 +7,13 @@ tic
 modelType = 'SIR';  % options: SIS, SIR
 % options:  Binary, ODE, Binary_RInf, ODE_RInf,
 % BinaryVsODE, BinaryVsODE_RInf, BinaryVsODE_PointGraph
-simType = 'Binary';
+simType = 'Binary_Special';
 
 
 
 %% Define simulation parameters
 
-N = 1000;       % Number of nodes
+N = 200;       % Number of nodes
 k = 6;          % Mean degree (average nodal degree)
 
 simulationLength = 100;  % Length of time each simulation runs for
