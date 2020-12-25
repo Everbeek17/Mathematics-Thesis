@@ -8,7 +8,7 @@ function [nodes] = SimulateNetwork_Binary(...
     numTimeSteps = length(timeValues);
     
     % initialize cell array that records nodes for each timestep
-    nodes = cell(1, numTimeSteps);
+    nodes = cell(numTimeSteps, 1);
     % set first timestep as initial nodes
     nodes{1} = initialNodes;
 

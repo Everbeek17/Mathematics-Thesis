@@ -7,8 +7,8 @@ function [nextNodes] = IncrementNodes_Binary(currentNodes, ...
     N = length(currentNodes);
     
     % create next iteration, defaulting all nodes to susceptible
-    nextNodes = Node.empty(0, N);
-    nextNodes(:) = Node.Susceptible;
+    nextNodes = Node.empty(N, 0);
+    nextNodes(1:N) = Node.Susceptible;  % could this be sped up?
 
     % iterate along each node
     for node_i = 1:N
@@ -20,7 +20,7 @@ function [nextNodes] = IncrementNodes_Binary(currentNodes, ...
             numInfectedNeighbors = 0;
             for node_j = 1:N
                 % if another infected node is connected to this node
-                if (adjacencyMatrix(node_j,node_i) == 1 && ...
+                if (adjacencyMatrix(node_i,node_j) == 1 && ...
                     (currentNodes(node_j) == Node.Infected))
                     numInfectedNeighbors = numInfectedNeighbors + 1;
                 end

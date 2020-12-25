@@ -18,7 +18,7 @@ function [nextProbabilities] = IncrementNodes_ODE(...
         deltaP = ODE_Equation(infectionRate, recoveryRate, ...
             currentProbabilities, i, adjacencyMatrix);
         
-        % use Newton's Method to find new peobability after deltaT
+        % use derivative and deltaT to find new probability after deltaT
         nextProbabilities(i) = currentProbabilities(i) + deltaP * deltaT;
         
     end
