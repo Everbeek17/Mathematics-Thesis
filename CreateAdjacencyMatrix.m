@@ -30,8 +30,9 @@ function [adjMatrix] = CreateAdjacencyMatrix(N, k)
         end
         
         % check if A is nice, if not try again
-        % (if all entries after being raised to a power are nonnegative
-        if (min(min(adjMatrix^20)) > 0)
+        % (if all entries after being raised to the power sqrt(N)
+        % are nonnegative).
+        if (min(min(adjMatrix^round(sqrt(N)))) > 0)
             nice_flag = true;
         end
     end
