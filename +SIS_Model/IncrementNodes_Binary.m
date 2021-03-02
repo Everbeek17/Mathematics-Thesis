@@ -8,7 +8,9 @@ function [nextNodes] = IncrementNodes_Binary(currentNodes, ...
     
     % create next iteration, defaulting all nodes to susceptible
     nextNodes = Node.empty(N, 0);
-    nextNodes(1:N) = Node.Susceptible;  % could this be sped up?
+    
+    % default all next nodes to susceptible
+    nextNodes(1:N) = Node.Susceptible;  % TODO could this be sped up?
 
     % iterate along each node
     for node_i = 1:N
@@ -16,25 +18,33 @@ function [nextNodes] = IncrementNodes_Binary(currentNodes, ...
         % if the node is susceptible, will they become infected?
         if (currentNodes(node_i) == Node.Susceptible)
 
-            % count how many of the neighbors are infected
-            numInfectedNeighbors = 0;
+            % iterate over every neighbor
             for node_j = 1:N
-                % if another infected node is connected to this node
-                if (adjacencyMatrix(node_i,node_j) == 1 && ...
-                    (currentNodes(node_j) == Node.Infected))
-                    numInfectedNeighbors = numInfectedNeighbors + 1;
+                
+                % check connection from this node to neighbor
+                connectionStrength = adjacencyMatrix(node_i,node_j);
+                
+                % check if connection is greater than zero
+                if (connectionStrength > 0)
+                    
+                    % check if the connected node is infected
+                    if (currentNodes(node_j) == Node.Infected)
+                    
+                        % infection attempts to jump from node_j to node_i
+                        if (rand() <= infectionRate * deltaT ...
+                                * connectionStrength)
+                            nextNodes(node_i) = Node.Infected;
+                            
+                            % if successful then stop iterating over
+                            % neighbors, as we have already infected this 
+                            % node.
+                            break;
+                        end
+                    end
                 end
             end
 
-            % try once, for each infected neighbor, to infect this node
-            for node_j = 1:numInfectedNeighbors
-                if (rand() <= (infectionRate * deltaT))
-                    nextNodes(node_i) = Node.Infected;
-                    break;
-                end
-            end
-
-        % if the node is infected, will they become susceptible?    
+        % else if the node is infected, will they become susceptible?    
         elseif (currentNodes(node_i) == Node.Infected)
 
             % if the given infected node does not recover
