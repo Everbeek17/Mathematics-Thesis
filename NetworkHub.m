@@ -4,9 +4,9 @@
 tic
 
 %% Decide the type of simulation to be run
-modelType = 'SIS';  % options: SIS, SIR
+modelType = 'SIR';  % options: SIS, SIR
 
-simType = 'BinaryVsODE_PointGraph'; % options:  Binary, ODE, 
+simType = 'Binary_Special'; % options:  Binary, ODE, 
 % Binary_RInf, ODE_RInf, BinaryVsODE, BinaryVsODE_RInf, 
 % BinaryVsODE_PointGraph, Binary_Special, ErrorChecking, ODE_VaccineTesting
 

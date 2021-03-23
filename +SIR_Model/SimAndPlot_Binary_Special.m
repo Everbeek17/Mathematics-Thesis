@@ -17,49 +17,56 @@ function [] = SimAndPlot_Binary_Special(Parameters)
     percentInitialInfected_delta = 0.02;    % delta value
     
     % define number of groups to "chunk" the initial nodes into
-    numInfectedGroups = 4;
+    numInfectedGroups = 5;
     
+    N = Parameters.N;
     
+    % how many different metrics we are looking at per simulation
+    numMetrics = 4;
     
+    %% Setup
     
     % creates all initial infection values
     percentInitialInfected_values = percentInitialInfected_min:...
         percentInitialInfected_delta:...
         percentInitialInfected_max;
     
-
-    %% Setup
     
-    adjacencyMatrix = CreateAdjacencyMatrix(Parameters.N, Parameters.k);
-
-    
-    N = Parameters.N;
+    adjacencyMatrix = CreateAdjacencyMatrix(N, Parameters.k);
     
     
     % sort nodes by nodal degree
+    % creates N x 2 array, first column being the node index, and the
+    % second column being the nodal degree of that node.
     sortedNodalDegreeMap = getSortedNodalDegreeMap(adjacencyMatrix);
     
     
     
-    numPoints = length(percentInitialInfected_values) * numInfectedGroups;
-    output = zeros(numPoints, 3);
+    numSimulations = length(percentInitialInfected_values) * numInfectedGroups;
+    output = zeros(numSimulations, numMetrics);
     simulationCounter = 1;  % keeps track of which simulation we are on
     
-    % to parallelize i need to change temp_counter to be calculated
+    % to parallelize i need to change simulationCounter to be calculated
     % independantly of each loop
     
     % iterate along each infection group within each infection group size
     for percentInitialInfected = percentInitialInfected_values
         
         % calculate number of individuals in each infected group
-        groupSize = round(N * percentInitialInfected);
+        % this group size is decided by the initial infection chance
+        initialInfectedGroupSize = round(N * percentInitialInfected);
         
-        %
-        minX = 0 + groupSize/2;
-        maxX = N - groupSize/2;
+        % ? center indices of lowest and highest groups ?
+        % 1 to N being full range, with "initialInfectedGroupSize" of
+        % groups equally spaced out within it, with the lowest and highest
+        % groups pressing up all the way against the ends (1 and N).
+        % These variables are the lowest group's center and the
+        % highest group's center.
+        minCenter = (1 + initialInfectedGroupSize)/2;
+        maxCenter = N - (initialInfectedGroupSize - 1)/2;
         
-        % Y = some calculated variable needed below
-        Y = (maxX - minX)/(numInfectedGroups - 1);
+        % Y = some calculated variable used below
+        Y = (maxCenter - minCenter)/(numInfectedGroups - 1);
         
         % iterate over each group (each group being a different selection
         % of individuals from the initial adjacency matrix, the lowest 
@@ -70,34 +77,42 @@ function [] = SimAndPlot_Binary_Special(Parameters)
             
             % X = index of array of individuals that is the center of
             % this group
-            X = minX + (groupNum - 1)*Y;
+            X = minCenter + (groupNum - 1)*Y;
             
             
-            lowestInfectedIndividual = floor(X - groupSize/2);
+            lowestInfectedIndividual = ...
+                floor(X - (initialInfectedGroupSize - 1)/2);
+
+            highestInfectedIndividual = lowestInfectedIndividual + ...
+                (initialInfectedGroupSize - 1);
             
-            % TODO: find better solution for not being able to index 0
-            if (lowestInfectedIndividual == 0)
-                lowestInfectedIndividual = 1;
-            end
+            % there should be exactly "groupNum" of indices chosen
+            indices = ...
+                lowestInfectedIndividual:1:highestInfectedIndividual;
             
             
-            highestInfectedIndividual = lowestInfectedIndividual + groupSize;
             
-            indices = lowestInfectedIndividual:1:highestInfectedIndividual;
+            
+            % continue from here
+            
+            
+            
             
             % get the indices to infect
             
-            temp = sortedNodalDegreeMap(:,1);
-            infect_indices = temp(indices);
-            
-            % and the nodal degrees of those indices
-            temp = sortedNodalDegreeMap(:,2);
-            nodal_degrees = temp(indices);
+            % get just the indices of the nodes that we have chosen
+            % earlier, (they were chosen based on their nodal degrees
+            % relative to the rest) as calculated further above.
+            infect_indices = sortedNodalDegreeMap(indices, 1);
             
             
+            % Same as above but grabbing the nodal degrees instead
+            nodal_degrees = sortedNodalDegreeMap(indices, 2);
             
             
-            % simulate
+            
+            
+            %% simulate
             
             % infect the nodes at the calculated indices
             % TODO: move to its own function?
@@ -109,6 +124,12 @@ function [] = SimAndPlot_Binary_Special(Parameters)
                     initialNodes(i) = Node.Susceptible;
                 end
             end
+            
+            
+            
+            
+            
+            
             
             
             numTimeSteps = length(0:Parameters.deltaT:Parameters.length);
