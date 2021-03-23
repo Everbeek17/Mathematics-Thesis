@@ -1,16 +1,17 @@
-function [nextNodes] = IncrementNodes_Binary(currentNodes, ...
-    adjacencyMatrix, infectionRate, recoveryRate, deltaT)
-%SIS_INCREMENT Summary of this function goes here
-%   Detailed explanation goes here
+function [nextNodes] = IncrementNodes_Binary(currentNodes, adjacencyMatrix, infectionRate, recoveryRate, deltaT)
+%Stochastically decides what the next Binary iteration will look like.
+%   This function creates the nodes for the next time step, deciding who
+%   is infected and who isn't using stochastic principles, an adjacency
+%   matrix, and other parameters.
 
-
+    % saves the total number of nodes N
     N = length(currentNodes);
     
-    % create next iteration, defaulting all nodes to susceptible
+    % allocates space for the next iteration/state
     nextNodes = Node.empty(N, 0);
     
-    % default all next nodes to susceptible
-    nextNodes(1:N) = Node.Susceptible;  % TODO could this be sped up?
+    % defaults all the nodes of the next iteration/state to susceptible
+    nextNodes(1:N) = Node.Susceptible;
 
     % iterate along each node
     for node_i = 1:N
@@ -21,7 +22,8 @@ function [nextNodes] = IncrementNodes_Binary(currentNodes, ...
             % iterate over every neighbor
             for node_j = 1:N
                 
-                % check connection from this node to neighbor
+                % check connection from neighbor (node_j) to this node
+                % (node_i)
                 connectionStrength = adjacencyMatrix(node_i,node_j);
                 
                 % check if connection is greater than zero
@@ -35,16 +37,16 @@ function [nextNodes] = IncrementNodes_Binary(currentNodes, ...
                                 * connectionStrength)
                             nextNodes(node_i) = Node.Infected;
                             
-                            % if successful then stop iterating over
-                            % neighbors, as we have already infected this 
-                            % node.
+                            % if infection was successful, then stop 
+                            % iterating over neighbors, as we have already
+                            % infected this node.
                             break;
                         end
                     end
                 end
             end
 
-        % else if the node is infected, will they become susceptible?    
+        % else, if the node is infected, will they become susceptible?    
         elseif (currentNodes(node_i) == Node.Infected)
 
             % if the given infected node does not recover

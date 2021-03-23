@@ -15,7 +15,7 @@ function [] = SimAndPlot_Binary(Parameters)
     nodes = SIS_Model.SimulateNetwork_Binary(...
         initialNodes, adjacencyMatrix, Parameters.beta, ...
         Parameters.gamma, Parameters.length, Parameters.deltaT);
-
+    
     % calculate totals for each timestep
     numTimeSteps = length(0:Parameters.deltaT:Parameters.length);
     numInfected = zeros(1, numTimeSteps);

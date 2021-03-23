@@ -12,55 +12,44 @@ function [] = SimAndPlot_BinaryVsODE_PointGraph(Parameters)
 
     initialNodes = CreateInitialNodes(...
         Parameters.initialInfectionChance, N);
+    
+    steadyStateTimeStep = Parameters.cutOffTime;
 
     %% Simulate
 
-    % Simulate Binary model
+    % simulate Binary model
     nodes = SIS_Model.SimulateNetwork_Binary(...
         initialNodes, adjacencyMatrix, Parameters.beta, ...
         Parameters.gamma, Parameters.length, Parameters.deltaT);
-    
-    % calculate average time spent infected for each node
-    % only starting from cutOffTime and onwards
-    nodal_degree = zeros(N, 1);
-    ratioSpentInfected_Binary = zeros(N, 1);
-    for node_i = 1:N
-        total = 0;
-        for timestep = ...
-                Parameters.cutOffTime/Parameters.deltaT : length(nodes)
-            total = total + (nodes{timestep, 1}(1, node_i) == Node.Infected);
-        end
-        ratioSpentInfected_Binary(node_i) = total/...
-            (length(nodes) + 1 - Parameters.cutOffTime/Parameters.deltaT);
-        
-        nodal_degree(node_i) = sum(adjacencyMatrix(:, node_i));
-        
-    end
-    
-    
     
     % Simulate ODE Model
     probabilities_ODE = SIS_Model.SimulateNetwork_ODE(initialNodes, ...
         adjacencyMatrix, Parameters.beta, ...
         Parameters.gamma, Parameters.length, Parameters.deltaT);
     
-    % get the final probabilities for each node
+    %% Post-processing
+    
+    % calculate average time spent infected for each node in Binary sim
+    % only starting from steadyStateTimeStep and onwards
+    ratioSpentInfected_Binary = zeros(N, 1);
+    for node_i = 1:N
+        total = 0;
+        for timestep = ...
+                steadyStateTimeStep : length(nodes)
+            total = total + (nodes{timestep, 1}(1, node_i) == Node.Infected);
+        end
+        ratioSpentInfected_Binary(node_i) = total/...
+            (length(nodes) + 1 - steadyStateTimeStep);
+    end
+    
+    % get the final ODE probabilities for each node
     finalProbabilities_ODE = zeros(N, 1);
     for i = 1:N
         finalProbabilities_ODE(i) = probabilities_ODE(end, i);
     end
-    %finalProbabilities_ODE(:) = probabilities_ODE(end,:);
     
-    % get the nodal degree for each node
-    %nodal_degree = zeros(N, 1);
-    for i = 1:N
-        
-        % count how many other nodes this node is connected towards 
-        % (j -> i)
-        %nodal_degree(i) = sum(adjacencyMatrix(:, i));
-        
-        
-    end
+    % get nodal degree for all nodes
+    nodal_degree = getNodalDegrees(adjacencyMatrix);
     max_degree = max(nodal_degree);
     
     color_gradient = cell(max_degree, 1);

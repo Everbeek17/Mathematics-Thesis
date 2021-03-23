@@ -1,29 +1,36 @@
-function [nextProbabilities] = IncrementNodes_ODE(...
-    currentProbabilities, adjacencyMatrix, infectionRate, ...
-    recoveryRate, deltaT)
-%SIS_INCREMENT Summary of this function goes here
-%   Detailed explanation goes here
-%   for each node, calculate the rate of change of its current probability
-%   then take the average of all the probability rate of changes for each
-%   time step and return an array of those.
+function [nextProbabilities] = IncrementNodes_ODE(currentProbabilities, adjacencyMatrix, infectionRate, recoveryRate, deltaT)
+%Decides next iteration probabilities by ODE equation.
+%   For each node, calculate its derivative of its probability of
+%   infection, then iterate it to its next probability of infection using
+%   Newton's Method.
     
+    % initialize next probabilites to current probabilities
     nextProbabilities = currentProbabilities;
-
+    
+    % save number of nodes N
     N = length(adjacencyMatrix(1,:));
 
-    % iterate along each node
+    % iterate over each node
     for i = 1:N
          
-        % calculate the rate of change of the current node
+        % calculate the rate of change of the current node, using ODE
+        % equation
         deltaP = ODE_Equation(infectionRate, recoveryRate, ...
             currentProbabilities, i, adjacencyMatrix);
         
-        % use derivative and deltaT to find new probability after deltaT
+        % use Newton's Method to find new probability after deltaT
         nextProbabilities(i) = currentProbabilities(i) + deltaP * deltaT;
         
+        % Special case check: make sure we don't go over 1 or below 0
+        if (nextProbabilities(i) > 1)
+            nextProbabilities(i) = 1;
+        elseif (nextProbabilities(i) < 0)
+            nextProbabilities(i) = 0;
+        end
     end
 end
 
+% ODE equation we plug into
 function [deltaP] = ODE_Equation(beta, gamma, P, i, A)
 
     deltaP = -gamma * P(i);

@@ -4,40 +4,43 @@
 tic
 
 %% Decide the type of simulation to be run
-modelType = 'SIR';  % options: SIS, SIR
-% options:  Binary, ODE, Binary_RInf, ODE_RInf,
-% BinaryVsODE, BinaryVsODE_RInf, BinaryVsODE_PointGraph
-simType = 'Binary_Special';
+modelType = 'SIS';  % options: SIS, SIR
 
+simType = 'BinaryVsODE_PointGraph'; % options:  Binary, ODE, 
+% Binary_RInf, ODE_RInf, BinaryVsODE, BinaryVsODE_RInf, 
+% BinaryVsODE_PointGraph, Binary_Special, ErrorChecking, ODE_VaccineTesting
 
 
 %% Define simulation parameters
 
-N = 200;       % Number of nodes
-k = 6;          % Mean degree (average nodal degree)
+N = 400;       % Number of nodes
+k = 8;         % Mean degree (average nodal degree)
 
-simulationLength = 100;  % Length of time each simulation runs for
-deltaT = 0.25;          % Granularity of each time step
+simulationLength = 150;  % Length of time each simulation runs for
+deltaT = 0.50;          % Granularity of each time unit
 
-cutOffTime = 70;    % how many seconds into the simulation to switch from
-%transient to steady state
+cutOffTime = 100;    % how many seconds into the simulation to switch from
+%transient to steady state (TODO replace this with more dynamic approach?)
 
 initialInfectionChance = 0.02;    % chance a random node starts infected
 
-beta = 0.05;    % Infection rate
-gamma = 0.09;   % Recovery rate
+beta = 0.04;    % Infection rate
+gamma = 0.15;   % Recovery rate
+
 
 saveFig = false;     % save .fig file to Figures folder?
 
-% untilSteady-specific values (only used with untilSteady option)
+% beta range specific values (only used with simulations that need
+% mutliple beta values option)
 if (strcmp(simType, 'Binary_RInf') || ...
         strcmp(simType, 'ODE_RInf') || ...
         strcmp(simType, 'Jacobian_Test') || ...
-        strcmp(simType, 'BinaryVsODE_RInf'))
+        strcmp(simType, 'BinaryVsODE_RInf') || ...
+        strcmp(simType, 'ODE_VaccineTesting'))
     
     
     % the range of beta values to consider (overwrites beta value above)
-    betaValueMax = 0.06;
+    betaValueMax = 0.28;
     betaValueMin = 0.0;
     deltaBeta = 0.0025;   % granularity between different beta values
 end
@@ -52,7 +55,6 @@ Parameters.beta = beta;
 Parameters.gamma = gamma;
 Parameters.length = simulationLength;
 Parameters.deltaT = deltaT;
-
 Parameters.cutOffTime = cutOffTime;
 
 Parameters.saveFig = saveFig;
@@ -60,7 +62,8 @@ Parameters.initialInfectionChance = initialInfectionChance;
 if (strcmp(simType, 'Binary_RInf') || ...
         strcmp(simType, 'ODE_RInf') || ...
         strcmp(simType, 'Jacobian_Test') || ...
-        strcmp(simType, 'BinaryVsODE_RInf'))
+        strcmp(simType, 'BinaryVsODE_RInf') || ...
+        strcmp(simType, 'ODE_VaccineTesting'))
     Parameters.beta = [];
     Parameters.SteadyState.betaValues = betaValueMin:deltaBeta:betaValueMax;
     Parameters.SteadyState.deltaBeta = deltaBeta;
@@ -84,6 +87,10 @@ switch Parameters.modelType
                 SIS_Model.SimAndPlot_ODE(Parameters);
             case "ODE_RInf"
                 SIS_Model.SimAndPlot_ODE_RInf(Parameters);
+            case "ODE_VaccineTesting"
+                SIS_Model.SimAndPlot_ODE_VaccineTesting(Parameters);
+                
+                
 
             case "BinaryVsODE"
                 SIS_Model.SimAndPlot_BinaryVsODE(Parameters);    
@@ -94,6 +101,9 @@ switch Parameters.modelType
                 SIS_Model.SimAndPlot_BinaryVsODE_PointGraph(Parameters);
             case 'Jacobian_Test'
                 SIS_Model.Jacobian_Test(Parameters);
+                
+            case 'ErrorChecking'
+                SIS_Model.ErrorChecking(Parameters);
         end
         
         
@@ -120,6 +130,9 @@ switch Parameters.modelType
 
             case "BinaryVsODE_PointGraph"
                 %SIR_Model.SimAndPlot_BinaryVsODE_PointGraph(Parameters);
+                
+            case 'Binary_ErrorChecking'
+                %SIS_Model.Binary_ErrorChecking(Parameters);
         end
 end
 

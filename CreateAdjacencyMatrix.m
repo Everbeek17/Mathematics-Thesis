@@ -1,6 +1,8 @@
 function [adjMatrix] = CreateAdjacencyMatrix(N, k)
-%CREATENETWORKMATRIX Returns NxN matrix with mean degree k
-%   Detailed explanation goes here
+%Returns NxN undirected adjacency matrix with mean degree k
+%   Creates an adjacency matrix representation of an undirected graph with
+%   N nodes and (N * k) edges. Because the graph is undirected, the
+%   adjacency matrix is symmetric.
 
     fprintf("generating nice Adjacency matrix...");
 
